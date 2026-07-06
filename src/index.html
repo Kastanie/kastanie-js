@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="App description">
+    <title>App</title>
+    <script src="./app/kastanie.js?v=[version]"></script>
+    <link rel="stylesheet" href="./app/kastanie.css?v=[version]"/>
+    <link rel="icon" type="image/png" href="./app/assets/icons/logo.png" />
+</head>
+
+<body>
+    <!-- Sections represent screens that are shown or hidden depending on the hash tag. -->
+    <section id="start">
+        <h1>Welcome to the App</h1>
+        <p>Version: [version]</p>
+        <p>This is a sample app that demonstrates routing and components.
+        </p>
+        <!--
+            Navigation uses hash tags and therefore provides a very simple
+            routing system.
+        -->
+        <a class="button" href="#screen1">Go to Screen 1</a>
+    </section>
+
+    <section id="screen1" class="hidden">
+        <h1>Screen 1</h1>
+        <p>This is the first screen.</p>
+        <!-- 
+            Components are declared for an element using the <code>data-component</code> attribute.
+            Outputs (views) are declared using the <code>data-view</code> attribute.
+            Components only become "active" when they enter the viewport.
+         -->
+        <div id="example" data-component="Example" data-view="ExampleView"><!-- Sample component output --></div>
+        <a class="button" href="#start">Back to Start</a>
+    </section>
+
+    <script>
+        // Initialize the app
+        const app = new App();
+    </script>
+</body>
+
+</html>
