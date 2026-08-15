@@ -4,6 +4,7 @@ set -eu
 
 SRC_DIR="src"
 DIST_DIR="dist"
+PUBLIC_DIR ="public"
 APP_DIST_DIR="$DIST_DIR/app"
 VERSION_FILE="$SRC_DIR/version.txt"
 JS_OUT="$APP_DIST_DIR/kastanie.js"
@@ -204,6 +205,8 @@ sed \
 mv "$JS_TMP" "$JS_OUT"
 mv "$CSS_TMP" "$CSS_OUT"
 mv "$HTML_TMP" "$DIST_DIR/index.html"
+# Kopieren der öffentlichen Dateien in das Dist-Verzeichnis
+cp -R "$PUBLIC_DIR"/* "$DIST_DIR/"
 printf '%s\n' "$version" > "$VERSION_FILE"
 
 echo "Built version $version"

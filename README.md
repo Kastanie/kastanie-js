@@ -11,6 +11,8 @@ src/
   app/                    framework core classes
   modules/                app modules, components, and views
 
+public/                   public files copied tu dist by build
+
 dist/
   index.html              built HTML file
   app/kastanie.js         aggregated JavaScript
