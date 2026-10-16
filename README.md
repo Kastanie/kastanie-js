@@ -18,7 +18,7 @@ package.json              npm scripts and development dependencies
 vite.config.js            Vite configuration
 ```
 
-Only files imported by the module graph are included in the JavaScript and CSS bundles. Files from `public/` are copied without transformation.
+JavaScript and CSS files below `src/app` and `src/modules` are discovered automatically. Files and directories whose names start with `__` are excluded. Files from `public/` are copied without transformation.
 
 ## Development and Build
 
@@ -58,7 +58,7 @@ Starting the development server does not increment the counter.
 <script type="module" src="./main.js"></script>
 ```
 
-`src/main.js` imports the application styles and classes, registers factory classes, and creates the `App` instance. Vite handles cache busting for generated JavaScript and CSS through content hashes.
+`src/main.js` discovers application styles and classes, registers exported classes, and creates the `App` instance. Vite handles cache busting for generated JavaScript and CSS through content hashes.
 
 ## Screens and Routing
 
@@ -282,21 +282,15 @@ src/modules/my-module/
   my-module.css
 ```
 
-Export new components and views, import them in `src/main.js`, and register them before `new App()`:
+Export new components and views as named classes. Vite discovers them automatically and registers each class under its export name:
 
 ```js
-import { MyComponent } from "./modules/my-module/MyComponent.js";
-import { MyComponentView } from "./modules/my-module/views/MyComponentView.js";
-
-AppFactory.register("MyComponent", MyComponent);
-AppFactory.register("MyComponentView", MyComponentView);
+export class MyComponent extends AppComponent {
+  // ...
+}
 ```
 
-Import module styles from `src/main.js` so Vite includes them in the CSS bundle:
-
-```js
-import "./modules/my-module/my-module.css";
-```
+CSS files below `src/app` and `src/modules` are included automatically. Prefix a file or directory with `__` to exclude it and its contents from development and production builds, for example `__MyDraft.js` or `__drafts/`.
 
 ## Notes
 

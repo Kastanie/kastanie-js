@@ -1,37 +1,46 @@
-import "./app/app.css";
-import "./modules/example/example.css";
+import.meta.glob(
+  ["./**/*.css", "!./**/__*.css", "!./**/__*/**"],
+  { eager: true },
+);
 
-import { App } from "./app/App.js";
-import { AppComponent } from "./app/AppComponent.js";
-import { AppComponentController } from "./app/AppComponentController.js";
-import { AppDictionary } from "./app/AppDictionary.js";
-import { AppFactory } from "./app/AppFactory.js";
-import { AppLoader } from "./app/AppLoader.js";
-import { AppNotifier } from "./app/AppNotifier.js";
-import { AppScreenController } from "./app/AppScreenController.js";
-import { AppViewportObserver } from "./app/AppViewportObserver.js";
-import { Example } from "./modules/example/Example.js";
-import { ExampleView } from "./modules/example/views/ExampleView.js";
-import { Version } from "./modules/version/Version.js";
-import { VersionView } from "./modules/version/views/VersionView.js";
+const moduleFiles = import.meta.glob(
+  [
+    "./app/**/*.js",
+    "./modules/**/*.js",
+    "!./app/**/__*.js",
+    "!./app/**/__*/**",
+    "!./modules/**/__*.js",
+    "!./modules/**/__*/**",
+  ],
+  { eager: true },
+);
 
-const classes = {
-  App,
-  AppComponent,
-  AppComponentController,
-  AppDictionary,
-  AppFactory,
-  AppLoader,
-  AppNotifier,
-  AppScreenController,
-  AppViewportObserver,
-  Example,
-  ExampleView,
-  Version,
-  VersionView,
-};
+const classes = new Map();
 
-for (const [name, classRef] of Object.entries(classes)) {
+for (const moduleExports of Object.values(moduleFiles)) {
+  for (const [name, exportedValue] of Object.entries(moduleExports)) {
+    const isClass =
+      typeof exportedValue === "function" &&
+      /^class\s/.test(Function.prototype.toString.call(exportedValue));
+
+    if (!isClass) {
+      continue;
+    }
+    if (classes.has(name) && classes.get(name) !== exportedValue) {
+      throw new Error(`Duplicate class export: ${name}`);
+    }
+    classes.set(name, exportedValue);
+  }
+}
+
+const App = classes.get("App");
+const AppFactory = classes.get("AppFactory");
+
+if (!App || !AppFactory) {
+  throw new Error("App and AppFactory must be exported by the app modules.");
+}
+
+for (const [name, classRef] of classes) {
   AppFactory.register(name, classRef);
 }
 
