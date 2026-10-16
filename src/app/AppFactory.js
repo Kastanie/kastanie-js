@@ -1,4 +1,4 @@
-class AppFactory {
+export class AppFactory {
   static registry = new Map();
   static pending = [];
   static ready = false;

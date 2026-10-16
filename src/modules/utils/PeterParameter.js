@@ -1,7 +1,7 @@
 /**
  * Static helper for providing parameters
  */
-var PeterParameter = {
+export var PeterParameter = {
   /**
    * Returns a hash parameter
    * @param {int} index Parameter index

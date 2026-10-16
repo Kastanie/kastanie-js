@@ -14,7 +14,7 @@
  *  }
  * );
  */
-class AppLoader {
+export class AppLoader {
   /**
    * Initializes or returns the global data cache.
    *

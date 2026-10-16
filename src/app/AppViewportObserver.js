@@ -3,7 +3,7 @@
  * @example
  * AppViewportObserver.register(document.getElementById("myElement"));
  */
-class AppViewportObserver {
+export class AppViewportObserver {
     /**
      * Constructor
      */

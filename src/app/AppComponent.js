@@ -1,7 +1,13 @@
 /**
  * App component
  */
-class AppComponent {
+import { AppComponentController } from "./AppComponentController.js";
+import { AppDictionary } from "./AppDictionary.js";
+import { AppFactory } from "./AppFactory.js";
+import { AppNotifier } from "./AppNotifier.js";
+import { AppViewportObserver } from "./AppViewportObserver.js";
+
+export class AppComponent {
   /**
    * Constructor
    * @param {string} id HTML element ID

@@ -1,7 +1,7 @@
 /**
  * Global event system as a singleton
  */
-class AppNotifier {
+export class AppNotifier {
   /**
    * Constructor
    */

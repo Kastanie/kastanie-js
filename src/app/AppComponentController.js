@@ -1,7 +1,10 @@
 /**
  * Initializes and manages AppComponents
  */
-class AppComponentController {
+import { AppFactory } from "./AppFactory.js";
+import { makeid } from "../modules/utils/Utils.js";
+
+export class AppComponentController {
   constructor() {
     this.components = new Array();
   }

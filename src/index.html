@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="App description">
     <title>App</title>
-    <script src="./app/kastanie.js?v=[version]"></script>
-    <link rel="stylesheet" href="./app/kastanie.css?v=[version]"/>
+    <script type="module" src="./main.js"></script>
     <link rel="icon" type="image/png" href="./app/assets/icons/logo.png" />
 </head>
 
@@ -15,7 +14,7 @@
     <!-- Sections represent screens that are shown or hidden depending on the hash tag. -->
     <section id="start">
         <h1>Welcome to the App</h1>
-        <p>Version: [version]</p>
+        <p data-component="Version" data-view="VersionView"></p>
         <p>This is a sample app that demonstrates routing and components.
         </p>
         <!--
@@ -37,10 +36,6 @@
         <a class="button" href="#start">Back to Start</a>
     </section>
 
-    <script>
-        // Initialize the app
-        const app = new App();
-    </script>
 </body>
 
 </html>

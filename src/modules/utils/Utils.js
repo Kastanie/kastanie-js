@@ -3,7 +3,7 @@
  * @param {Array} array Array with duplicate entries
  * @returns {Array} Cleaned array
  */
-var ArrayUnique = function (array) {
+export var ArrayUnique = function (array) {
   var unique = new Array();
   for (var i = 0; i < array.length; i++) {
     var current = array[i];
@@ -20,7 +20,7 @@ var ArrayUnique = function (array) {
  * @param {string} string String to check
  * @returns {string} Cleaned string
  */
-function sanatize(string) {
+export function sanatize(string) {
   function strip(string) {
     return stripHtml(string.replace(/^\s+|\s+$/g, ""));
   }
@@ -38,7 +38,7 @@ function sanatize(string) {
  * @param {Number} length ID length
  * @returns {string} Random ID
  */
-function makeid(length) {
+export function makeid(length) {
   if (!length) {
     length = 10;
   }

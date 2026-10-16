@@ -1,7 +1,11 @@
 /**
  * Initializes and manages screens
  */
-class AppScreenController {
+import { AppNotifier } from "./AppNotifier.js";
+import { PeterParameter } from "../modules/utils/PeterParameter.js";
+import { makeid } from "../modules/utils/Utils.js";
+
+export class AppScreenController {
 
   /**
    * Constructor

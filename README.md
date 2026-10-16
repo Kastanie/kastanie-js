@@ -1,62 +1,64 @@
 # Kastanie JS
 
-Kastanie JS is a small browser-based JavaScript engine for simple single-page applications. The framework has no external dependencies and combines hash-based routing, automatically initialized components, views, a lightweight event system, and a dictionary for replaceable texts.
+Kastanie JS is a small browser-based JavaScript engine for simple single-page applications. The framework has no runtime dependencies and combines hash-based routing, automatically initialized components, views, a lightweight event system, and a dictionary for replaceable texts. Vite provides the development server and production build.
 
 ## Project Structure
 
 ```text
 src/
   index.html              app entry point
-  version.txt             current build version
+  main.js                 module registration and app startup
   app/                    framework core classes
   modules/                app modules, components, and views
 
-public/                   public files copied tu dist by build
+public/                   static files copied to dist by Vite
 
-dist/
-  index.html              built HTML file
-  app/kastanie.js         aggregated JavaScript
-  app/styles.css          aggregated CSS
-  app/data/dictionary.json
+dist/                     generated production build
+package.json              npm scripts and development dependencies
+vite.config.js            Vite configuration
 ```
 
-Files or folders whose names start with `__` are ignored during the build. This is useful for drafts, backups, or temporarily disabled modules.
+Only files imported by the module graph are included in the JavaScript and CSS bundles. Files from `public/` are copied without transformation.
 
-## Build
+## Development and Build
 
-Run the build with the shell script:
+Install the development dependencies and start the local server:
 
 ```sh
-./build.sh
+npm install
+npm run dev
 ```
 
-The script:
+Vite prints the local URL, usually `http://localhost:5173/`, and reloads the page when source files change.
 
-- increments the version number in `src/version.txt`
-- aggregates and minifies JavaScript files into `dist/app/kastanie.js`
-- aggregates and minifies CSS files into `dist/app/styles.css`
-- copies `src/index.html` to `dist/index.html`
-- replaces `[version]` in the built HTML file
-- automatically registers detected JavaScript classes with `AppFactory.register("ClassName", ClassName)`
+Create and locally preview the production build:
 
-Files from `src/app` are included in a fixed order. All JavaScript files from `src/modules` are appended afterwards.
+```sh
+npm run build
+npm run preview
+```
+
+The production build is written to `dist/`. Vite bundles and minifies imported JavaScript and CSS, adds content hashes to generated assets, processes `src/index.html`, and copies `public/`.
+
+Each production build increments the counter in `build-number.json`. The package version and build number are compiled into the application and can be read at runtime:
+
+```js
+window.app.build.version;
+window.app.build.number;
+window.app.build.label; // For example: "1.0.0+42"
+```
+
+Starting the development server does not increment the counter.
 
 ## App Start
 
-The app is included and started in `src/index.html`:
+`src/index.html` loads the module entry point:
 
 ```html
-<script src="./app/kastanie.js?v=[version]"></script>
-<link rel="stylesheet" href="./app/kastanie.css?v=[version]" />
-
-<script>
-  const app = new App();
-</script>
+<script type="module" src="./main.js"></script>
 ```
 
-During the build, `[version]` is replaced with the current version number. This helps bypass browser caches after a build.
-
-Note: In the built `dist/index.html`, the build script changes the CSS reference to `./app/styles.css`, because CSS files are aggregated there.
+`src/main.js` imports the application styles and classes, registers factory classes, and creates the `App` instance. Vite handles cache busting for generated JavaScript and CSS through content hashes.
 
 ## Screens and Routing
 
@@ -89,7 +91,9 @@ On startup, `AppComponentController` looks for all elements with `data-component
 A component extends `AppComponent`:
 
 ```js
-class Example extends AppComponent {
+import { AppComponent } from "../../app/AppComponent.js";
+
+export class Example extends AppComponent {
   init() {
     this.data = {
       name: "Example",
@@ -127,7 +131,9 @@ Views separate presentation from component logic. A view is assigned with `data-
 The component provides data:
 
 ```js
-class Example extends AppComponent {
+import { AppComponent } from "../../app/AppComponent.js";
+
+export class Example extends AppComponent {
   init() {
     this.data = {
       name: "Example",
@@ -139,7 +145,7 @@ class Example extends AppComponent {
 The view renders that data:
 
 ```js
-class ExampleView {
+export class ExampleView {
   render(data) {
     return "This is an example for a component: " + data.name;
   }
@@ -153,7 +159,9 @@ When `render()` is executed on the component, `AppComponent` automatically calls
 Components can register, trigger, and unregister global events:
 
 ```js
-class Example extends AppComponent {
+import { AppComponent } from "../../app/AppComponent.js";
+
+export class Example extends AppComponent {
   init() {
     this.register("someEvent", function (data) {
       console.log("someEvent was triggered", data);
@@ -218,12 +226,16 @@ After components are rendered, `AppDictionary.update()` is called automatically.
 Texts can also be read directly in JavaScript:
 
 ```js
+import { AppDictionary } from "./app/AppDictionary.js";
+
 const label = AppDictionary.read("close");
 ```
 
 The current language can be changed:
 
 ```js
+import { AppDictionary } from "./app/AppDictionary.js";
+
 AppDictionary.language("en");
 AppDictionary.update();
 ```
@@ -241,6 +253,8 @@ Parameters in dictionary texts are written with percent signs:
 ```
 
 ```js
+import { AppDictionary } from "./app/AppDictionary.js";
+
 const text = AppDictionary.read("welcome", { name: "Ada" });
 ```
 
@@ -268,13 +282,27 @@ src/modules/my-module/
   my-module.css
 ```
 
-As long as files and folders do not start with `__`, they are included automatically during the build. Classes are automatically registered with `AppFactory` in the built JavaScript.
+Export new components and views, import them in `src/main.js`, and register them before `new App()`:
+
+```js
+import { MyComponent } from "./modules/my-module/MyComponent.js";
+import { MyComponentView } from "./modules/my-module/views/MyComponentView.js";
+
+AppFactory.register("MyComponent", MyComponent);
+AppFactory.register("MyComponentView", MyComponentView);
+```
+
+Import module styles from `src/main.js` so Vite includes them in the CSS bundle:
+
+```js
+import "./modules/my-module/my-module.css";
+```
 
 ## Notes
 
-- Class names must be unique.
-- The value of `data-component` must match the component class name.
-- The value of `data-view` must match the view class name.
+- Factory registration names must be unique.
+- The value of `data-component` must match its `AppFactory` registration name.
+- The value of `data-view` must match its `AppFactory` registration name.
 - Components should extend `AppComponent`.
 - Views need a `render(data)` method.
-- Dictionary files must be available at runtime under `dist/app/data/dictionary.json`.
+- Dictionary files belong in `public/app/data/` and are available at runtime under `app/data/`.

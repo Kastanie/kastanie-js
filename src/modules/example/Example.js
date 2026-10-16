@@ -3,7 +3,9 @@
  * @example
  * <div data-component="Example" data-view="ExampleView" id="example1"></div>
  */
-class Example extends AppComponent {
+import { AppComponent } from "../../app/AppComponent.js";
+
+export class Example extends AppComponent {
     /**
      * Automatic component initialization
      */

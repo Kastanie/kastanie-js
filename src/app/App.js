@@ -1,8 +1,14 @@
 /**
  * AppController
  */
-class App {
-  constructor() {
+import { AppComponentController } from "./AppComponentController.js";
+import { AppDictionary } from "./AppDictionary.js";
+import { AppFactory } from "./AppFactory.js";
+import { AppScreenController } from "./AppScreenController.js";
+
+export class App {
+  constructor(build) {
+    this.build = build;
     window.app = this;
     AppFactory.markReady();
     this.screenController = new AppScreenController();

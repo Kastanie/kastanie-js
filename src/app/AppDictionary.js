@@ -5,9 +5,12 @@
  * @usage AppDictionary.language("de");
  * @usage AppDictionary.update(); 
  */
+import { AppLoader } from "./AppLoader.js";
+import { AppNotifier } from "./AppNotifier.js";
+
 let AppDictionaryInstance = null;
 
-class AppDictionary {
+export class AppDictionary {
   /**
    * Constructor
    */
