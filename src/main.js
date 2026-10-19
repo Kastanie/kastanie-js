@@ -21,7 +21,7 @@ for (const moduleExports of Object.values(moduleFiles)) {
   for (const [name, exportedValue] of Object.entries(moduleExports)) {
     const isClass =
       typeof exportedValue === "function" &&
-      /^class\s/.test(Function.prototype.toString.call(exportedValue));
+      /^class\b/.test(Function.prototype.toString.call(exportedValue));
 
     if (!isClass) {
       continue;
